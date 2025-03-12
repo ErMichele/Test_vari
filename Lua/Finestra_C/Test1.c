@@ -22,7 +22,7 @@ int main() {
     lua_register(L, "calcolaSomma", lua_somma);
 
     // Carica ed esegui Love2D
-    if (luaL_dofile(L, "main.lua")) {
+    if (luaL_dofile(L, "test1.lua")) {
         printf("Errore: %s\n", lua_tostring(L, -1));
     }
 
