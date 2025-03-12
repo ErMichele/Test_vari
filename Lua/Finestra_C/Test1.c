@@ -1,6 +1,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <stdio.h>
 
 int lua_somma(lua_State *L) {
     double a = lua_tonumber(L, 1); // Primo numero
