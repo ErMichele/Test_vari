@@ -7,11 +7,11 @@ Quindi la sommatoria di 1/x, dove x `e un valore compreso tra 1 ed n.
 
 #include <stdio.h>
 
-int SerieArmonica (int x) {
+int serieArmonica (int x) {
     if (x == 1) {
         return 1;
     } else {
-        return (float) 1 / x + SerieArmonica(x - 1);
+        return 1.0 / x + serieArmonica(x - 1);
     }
 }
 
@@ -21,6 +21,6 @@ int main() {
     printf("Inserisci il numero: ");
     scanf("%d", &x);
 
-    float Serie = SerieArmonica(x);
-    printf("%f", Serie);
+    float Serie = serieArmonica(x);
+    printf("%.2f", Serie);
 }
