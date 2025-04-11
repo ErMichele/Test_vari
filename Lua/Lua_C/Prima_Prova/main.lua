@@ -6,7 +6,7 @@ ffi.cdef[[
 ]]
 
 -- Carica la DLL
-local mialibreria = ffi.load("mialibreria.dll")
+local mialibreria = ffi.load("Backend\\mialibreria.dll")
 
 -- Usa la funzione somma
 local risultato = mialibreria.somma(5, 10)
