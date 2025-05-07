@@ -32,7 +32,7 @@ int main() {
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
-    inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
+    inet_pton(AF_INET, "192.168.1.123", &server_addr.sin_addr);
 
     connect(client_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
 
