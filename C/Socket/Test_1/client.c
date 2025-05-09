@@ -12,7 +12,7 @@
     #include <arpa/inet.h>
 #endif
 
-#define PORT 1853
+#define PORT 8080
 #define BUFFER_SIZE 1024
 
 int main() {
@@ -35,7 +35,7 @@ int main() {
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
-    server_address.sin_addr.s_addr = inet_addr("119.12.33.240");
+    server_address.sin_addr.s_addr = inet_addr("172.16.1.55");
 
     // Connessione al server
     if (connect(sock, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
