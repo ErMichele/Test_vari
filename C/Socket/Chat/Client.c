@@ -51,7 +51,7 @@ int main() {
 
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
-    server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_address.sin_addr.s_addr = inet_addr("172.16.1.55");
 
     if (connect(sock, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
         perror("Errore nella connessione");
