@@ -1,68 +1,82 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <winsock2.h>
+#include <errno.h>
 
-#pragma comment(lib, "ws2_32.lib") // Link alla libreria Winsock
+#ifdef _WIN32
+    #include <winsock2.h>
+    #pragma comment(lib, "ws2_32.lib")
+    typedef int socklen_t; // Define socklen_t for Windows
+#else
+    #include <unistd.h>
+    #include <sys/socket.h>
+    #include <arpa/inet.h>
+#endif
 
 #define PORT 8080
 #define BUFFER_SIZE 1024
 
 int main() {
-    WSADATA wsa;
-    SOCKET server_fd, new_socket;
+    #ifdef _WIN32
+        WSADATA wsa;
+        if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+            printf("Errore WSAStartup: %d\n", WSAGetLastError());
+            return 1;
+        }
+    #endif
+
+    int server_fd, new_socket;
     struct sockaddr_in address;
+    socklen_t addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
 
-    // 1. Inizializzazione di Winsock
-    if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
-        printf("Errore WSAStartup: %d\n", WSAGetLastError());
-        return 1;
-    }
-
-    // 2. Creazione del socket
+    // 1. Create socket
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd == INVALID_SOCKET) {
-        printf("Errore nella creazione del socket: %d\n", WSAGetLastError());
+    if (server_fd < 0) {
+        perror("Errore nella creazione del socket");
         return 1;
     }
 
-    // 3. Configurazione dell'indirizzo
+    // 2. Configure address
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 
-    // 4. Associazione del socket alla porta
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) == SOCKET_ERROR) {
-        printf("Errore nel binding: %d\n", WSAGetLastError());
+    // 3. Bind socket to port
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        perror("Errore nel binding");
         return 1;
     }
 
-    // 5. Messa in ascolto
-    if (listen(server_fd, 3) == SOCKET_ERROR) {
-        printf("Errore nella listen: %d\n", WSAGetLastError());
+    // 4. Listen for connections
+    if (listen(server_fd, 3) < 0) {
+        perror("Errore nella listen");
         return 1;
     }
     printf("Server in ascolto sulla porta %d...\n", PORT);
 
-    // 6. Accettazione della connessione
-    int addrlen = sizeof(address);
+    // 5. Accept client connection
     new_socket = accept(server_fd, (struct sockaddr*)&address, &addrlen);
-    if (new_socket == INVALID_SOCKET) {
-        printf("Errore nell'accept: %d\n", WSAGetLastError());
+    if (new_socket < 0) {
+        perror("Errore nell'accept");
         return 1;
     }
     printf("Connessione accettata!\n");
 
-    // 7. Ricezione e risposta
+    // 6. Receive and respond
     recv(new_socket, buffer, BUFFER_SIZE, 0);
     printf("Messaggio ricevuto: %s\n", buffer);
     send(new_socket, "Messaggio ricevuto!", strlen("Messaggio ricevuto!"), 0);
 
-    // 8. Chiusura del socket
-    closesocket(new_socket);
-    closesocket(server_fd);
-    WSACleanup();
+    // 7. Close sockets
+    #ifdef _WIN32
+        closesocket(new_socket);
+        closesocket(server_fd);
+        WSACleanup();
+    #else
+        close(new_socket);
+        close(server_fd);
+    #endif
 
     return 0;
 }
