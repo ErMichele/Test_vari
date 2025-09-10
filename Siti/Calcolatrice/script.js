@@ -1,5 +1,6 @@
 const display = document.getElementById('display');
 const buttons = document.querySelectorAll('button');
+const ButtonPress = new Audio("resources/SFX/Button-Press.mp3");
 
 let input = '';
 let badInput = false;
@@ -20,33 +21,15 @@ function calculate() {
         input = result.toString();
         updateDisplay();
     } catch (error) {
-        input = error;
+        input = 'Errore';
         badInput = true;
         updateDisplay();
     }
 }
-
 
 function toggleSign() {
-    if (input) {
-        if (input.startsWith('-')) {
-            input = input.slice(1);
-        } else {
-            input = '-' + input;
-        }
-        updateDisplay();
-    }
-}
-
-function applyPercentage() {
-    try {
-        input = (eval(input) / 100).toString();
-        updateDisplay();
-    } catch {
-        badInput = true;
-        input = 'Error';
-        updateDisplay();
-    }
+    input = input.startsWith('-') ? input.slice(1) : '-' + input;
+    updateDisplay();
 }
 
 function backspace() {
@@ -54,8 +37,69 @@ function backspace() {
     updateDisplay();
 }
 
+function applyPercentage() {
+    try {
+        const result = eval(input) / 100;
+        if (!isFinite(result) || isNaN(result)) {
+            throw new Error('Invalid calculation');
+        }
+        input = result.toString();
+        updateDisplay();
+    } catch {
+        input = 'Errore';
+        badInput = true;
+        updateDisplay();
+    }
+}
+
+function applySquareRoot() {
+    try {
+        const result = Math.sqrt(eval(input));
+        if (!isFinite(result) || isNaN(result)) {
+            throw new Error('Invalid calculation');
+        }
+        input = result.toString();
+        updateDisplay();
+    } catch (error) {
+        input = 'Errore';
+        badInput = true;
+        updateDisplay();
+    }
+}
+
+function applySquare() {
+    try {
+        const result = Math.pow(eval(input), 2);
+        if (!isFinite(result) || isNaN(result)) {
+            throw new Error('Invalid calculation');
+        }
+        input = result.toString();
+        updateDisplay();
+    } catch (error) {
+        input = 'Errore';
+        badInput = true;
+        updateDisplay();
+    }
+}
+
+function applyInverse() {
+    try {
+        const result = 1 / eval(input);
+        if (!isFinite(result) || isNaN(result)) {
+            throw new Error('Invalid calculation');
+        }
+        input = result.toString();
+        updateDisplay();
+    } catch (error) {
+        input = 'Errore';
+        badInput = true;
+        updateDisplay();
+    }
+}
+
 buttons.forEach(button => {
     button.addEventListener('click', () => {
+        ButtonPress.play();
         const value = button.textContent;
 
         if (badInput) {
@@ -81,6 +125,19 @@ buttons.forEach(button => {
             case '%':
                 applyPercentage();
                 break;
+            case '√':
+                applySquareRoot();
+                break;
+            case 'x²':
+                applySquare();
+                break;
+            case '1/x':
+                applyInverse();
+                break;
+            case 'π':
+                input += Math.PI.toString();
+                updateDisplay();
+                break;
             default:
                 input += value;
                 updateDisplay();
@@ -88,9 +145,9 @@ buttons.forEach(button => {
     });
 });
 
-// Optional: Keyboard support
 document.addEventListener('keydown', (e) => {
     const key = e.key;
+    ButtonPress.play();
 
     if (badInput) {
         input = '';
