@@ -103,7 +103,7 @@ void aggiungi_domanda() {
         getchar(); // consuma \n
 
         if (corretta < 1 || corretta > 3)
-            printf("⚠️  Inserisci un numero tra 1 e 3.\n");
+            printf("Inserisci un numero tra 1 e 3.\n");
     } while (corretta < 1 || corretta > 3);
 
     FILE *quiz = fopen("quiz.txt", "a");
@@ -138,19 +138,19 @@ void gioca_quiz() {
 
         if (scanf("%d", &risposta) != 1) {
             while (getchar() != '\n'); // pulisce input errato
-            printf("⚠️  Risposta non valida! Saltata.\n");
+            printf("Risposta non valida! Saltata.\n");
             totale++;
             continue;
         }
         getchar(); // consuma \n
 
         if (risposta < 1 || risposta > 3) {
-            printf("⚠️  Risposta non valida! Saltata.\n");
+            printf(" Risposta non valida! Saltata.\n");
         } else if (risposta == corretta) {
-            printf("✅ Corretta!\n");
+            printf("Corretta!\n");
             punteggio++;
         } else {
-            printf("❌ Sbagliato. Risposta corretta: %d\n", corretta);
+            printf("Sbagliato. Risposta corretta: %d\n", corretta);
         }
         totale++;
     }
@@ -158,7 +158,7 @@ void gioca_quiz() {
     fclose(quiz);
 
     if (totale == 0) {
-        printf("⚠️  Nessuna domanda trovata nel quiz.\n");
+        printf("Nessuna domanda trovata nel quiz.\n");
         return;
     }
 
