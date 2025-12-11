@@ -60,29 +60,74 @@ struct Node* delete(struct Node* root, int value) {
     return root;
 }
 
-void inOrder(struct Node* root) {
-    if (root != NULL) {
+void inOrder(struct Node *root)
+{
+    if (root != NULL)
+    {
         inOrder(root->left);
         printf("%d ", root->data);
         inOrder(root->right);
     }
 }
 
+void preOrder(struct Node *root)
+{
+    if (root != NULL)
+    {
+        printf("%d ", root->data);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+void postOrder(struct Node *root)
+{
+    if (root != NULL)
+    {
+        postOrder(root->left);
+        postOrder(root->right);
+        printf("%d ", root->data);
+    }
+}
+void printTree (struct Node *root) {
+    printf("\nInOrder: ");
+    inOrder(root);
+    printf("\nPreOrder: ");
+    preOrder(root);
+    printf("\nPostOrder: ");
+    postOrder(root);
+    printf("\n");
+}
 int main() {
     struct Node* root = NULL;
-    root = insert(root, 10);
-    insert(root, 5);
-    insert(root, 20);
 
-    printf("Prima della cancellazione: ");
-    inOrder(root);
-    printf("\n");
+    // Inserimento di più nodi per creare un albero più grande
+    int values[] = {15, 10, 20, 8, 12, 17, 25, 6, 11, 16, 27};
+    int n = sizeof(values) / sizeof(values[0]);
+    for (int i = 0; i < n; i++) {
+        root = insert(root, values[i]);
+    }
 
+    printTree(root);
+
+    // Inserimento di un nuovo nodo
+    printf("\nInserisco 13:\n");
+    root = insert(root, 13);
+    printTree(root);
+
+    // Cancellazione di un nodo foglia
+    printf("\nCancello 6 (foglia):\n");
+    root = delete(root, 6);
+    printTree(root);
+
+    // Cancellazione di un nodo con un solo figlio
+    printf("\nCancello 25 (un solo figlio):\n");
+    root = delete(root, 25);
+    printTree(root);
+
+    // Cancellazione di un nodo con due figli
+    printf("\nCancello 10 (due figli):\n");
     root = delete(root, 10);
-
-    printf("Dopo la cancellazione: ");
-    inOrder(root);
-    printf("\n");
-
+    printTree(root);
     return 0;
 }
